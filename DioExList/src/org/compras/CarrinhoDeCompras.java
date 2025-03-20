@@ -23,7 +23,14 @@ public class CarrinhoDeCompras {
                     remover.add(item);
                 }
             }
-            itemLista.removeAll(remover);
+
+            if (remover.isEmpty()){
+                System.out.println("Não tem esse item no carrinho.");
+            } else {
+                itemLista.removeAll(remover);
+                System.out.println("Item removido com sucesso");
+                remover.clear();
+            }
         } else {
             System.out.println("Lista vazia.");
         }
@@ -31,6 +38,7 @@ public class CarrinhoDeCompras {
 
     public double calcularValorTotal(){
         if (!itemLista.isEmpty()){
+            exibirItens();
             double valorTotal = 0;
             for (Item item : itemLista) {
                 double valor = item.getPreco() * item.getQuantidade();
@@ -45,6 +53,7 @@ public class CarrinhoDeCompras {
 
     public void exibirItens(){
         if (!itemLista.isEmpty()) {
+            System.out.println(" ");
             for (Item item : itemLista) {
                 System.out.println(item.getNome() +" R$"+ item.getPreco() +" Quantidade: "+ item.getQuantidade());
             }

@@ -1,5 +1,6 @@
 package org.compras;
 
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class Main {
@@ -10,48 +11,52 @@ public class Main {
         
         int n = 0;
         
-        while (n != 5){
+        while (n != 4){
             System.out.println("""
-                Escolha uma opção:
 
-                [ 0 ] Adicionar item automaticamente.
-                [ 1 ] Adicionar item manualmente.
-                [ 2 ] Exibir itens.
-                [ 3 ] Remover item.
-                [ 4 ] Finalizar compra.
-            """);
+            [ 1 ] Adicionar item manualmente.
+            [ 2 ] Exibir itens.
+            [ 3 ] Remover item.
+            [ 4 ] Finalizar compra.
+
+            Escolha uma opção: """);
             
             n = scanner.nextInt();
+            scanner.nextLine();
 
             switch (n) {
-                case 0: 
-                    carrinhoDeCompras.adicionarItem("Lápis", 2, 3);
-                    carrinhoDeCompras.adicionarItem("Lápis", 2, 3);
-                    carrinhoDeCompras.adicionarItem("Caderno", 35, 1);
-                    carrinhoDeCompras.adicionarItem("Borracha", 2, 2);
-                    break;
-                case 1: //preguiça de por as exceptions
-                    System.out.print("Digite o nome do item: ");
+                case 1 -> {
+                    try{
+                        System.out.print("\nDigite o nome do item: ");
+                        String nome = scanner.nextLine().trim();
+                        if (nome.isBlank()) throw new IllegalArgumentException("Obrigatório ter um nome.");
+                        item.setNome(nome);
+                        System.out.print("Digite o valor do item: ");
+                        double valor = scanner.nextDouble();
+                        if (valor <= 0) throw new IllegalArgumentException("O valor do item não pode ser negativo.");
+                        item.setPreco(valor);
+                        System.out.print("Digite a quantidade do item: ");
+                        int quantidade = scanner.nextInt();
+                        if (quantidade <= 0) throw new IllegalArgumentException("O valor do item não pode ser negativo.");
+                        item.setQuantidade(quantidade);
+                        System.out.println(" ");
+                        carrinhoDeCompras.adicionarItem(item.getNome(), item.getPreco(), item.getQuantidade());
+                    } catch (InputMismatchException e){
+                        System.out.println("Erro: Entrada inválida! " + e.getMessage());
+                    } catch (IllegalArgumentException e){
+                        System.out.println("Erro: " + e.getMessage());
+                    }
+                }
+                case 2 -> carrinhoDeCompras.exibirItens();
+                case 3 -> {
+                    System.out.print("\nDigite o nome do item que deseja retirar: ");
                     String nome = scanner.nextLine();
                     item.setNome(nome);
-                    System.out.print("Digite o valor do item: ");
-                    double valor = scanner.nextDouble();
-                    item.setPreco(valor);
-                    System.out.print("Digite a quantidade do item: ");
-                    int quantidade = scanner.nextInt();
-                    item.setQuantidade(quantidade);
-
-                default:
-                    break;
+                    carrinhoDeCompras.removerItem(item.getNome());
+                }
+                case 4 -> System.out.println("O valor total da compra é = " + carrinhoDeCompras.calcularValorTotal());
+                default -> System.out.println("Opção inválida, tente novamente.");
             }
-        
-            carrinhoDeCompras.exibirItens();
-        
-            carrinhoDeCompras.removerItem("Lápis");
-        
-            carrinhoDeCompras.exibirItens();
-        
-            System.out.println("O valor total da compra é = " + carrinhoDeCompras.calcularValorTotal());
         }
         scanner.close();
       }
